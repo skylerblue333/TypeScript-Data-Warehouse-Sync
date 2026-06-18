@@ -1,0 +1,1 @@
+# TypeScript-Data-Warehouse-Sync\n\n## Overview\nEnterprise-grade data warehouse sync implementation in TypeScript.\n\n## Quick Start (1-Click Build)\n\n```bash\ngit clone https://github.com/skylerblue333/TypeScript-Data-Warehouse-Sync.git\ncd TypeScript-Data-Warehouse-Sync\n# Build instructions depend on the language\n```\n
