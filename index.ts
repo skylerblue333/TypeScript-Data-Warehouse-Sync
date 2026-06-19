@@ -1,1 +1,0 @@
-console.log('Starting TypeScript-Data-Warehouse-Sync service...');\n

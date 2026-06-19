@@ -1,5 +1,5 @@
 {
-  "name": "service",
+  "name": "typescript-data-warehouse-sync",
   "version": "3.0.0",
   "main": "dist/index.js",
   "scripts": {
