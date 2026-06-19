@@ -1,26 +1,29 @@
 import express from 'express';
-import cors from 'cors';
+import { z } from 'zod';
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-app.get('/health', (req, res) => {
-    res.json({ status: 'healthy', domain: 'sync', uptime: process.uptime() });
+const payloadSchema = z.object({
+  data: z.record(z.any()),
+  timestamp: z.number().optional()
 });
 
 app.post('/api/v1/process', (req, res) => {
-    const { payload } = req.body;
-    if (!payload) return res.status(400).json({ error: 'Missing payload' });
-    res.status(201).json({ 
-        success: true, 
-        processed: payload, 
-        timestamp: new Date().toISOString() 
-    });
+  try {
+    const validated = payloadSchema.parse(req.body);
+    res.json({ status: 'success', processed: validated.data });
+  } catch (e) {
+    res.status(400).json({ error: 'Invalid payload schema' });
+  }
+});
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', version: '3.0.0' });
 });
 
 if (require.main === module) {
-    app.listen(3000, () => console.log('TypeScript-Data-Warehouse-Sync API running on port 3000'));
+  app.listen(8080, () => console.log('TypeScript-Data-Warehouse-Sync running on port 8080'));
 }
 
 export default app;
