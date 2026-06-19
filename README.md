@@ -1,1 +1,18 @@
-# TypeScript-Data-Warehouse-Sync\n\n## Overview\nEnterprise-grade data warehouse sync implementation in TypeScript.\n\n## Quick Start (1-Click Build)\n\n```bash\ngit clone https://github.com/skylerblue333/TypeScript-Data-Warehouse-Sync.git\ncd TypeScript-Data-Warehouse-Sync\n# Build instructions depend on the language\n```\n
+# TypeScript-Data-Warehouse-Sync
+
+![CI](https://github.com/skylerblue333/TypeScript-Data-Warehouse-Sync/workflows/CI/badge.svg)
+
+Production-ready TypeScript Express API for sync operations.
+
+## Features
+- Fully typed Express handlers
+- Supertest integration testing
+- Docker containerization
+- GitHub Actions CI Pipeline
+
+## Quick Start
+```bash
+npm ci
+npm test
+npm run build && npm start
+```
