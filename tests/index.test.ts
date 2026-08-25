@@ -2,17 +2,19 @@ import request from 'supertest';
 import app, { prepareBatch } from '../src/index';
 
 describe('Sky Warehouse Sync', () => {
+  const records: Array<Record<string, string | number | boolean | null>> = [
+    { id: 2, name: 'Bob', active: true },
+    { id: 1, name: 'Alice', active: true },
+    { id: 2, name: 'Robert', active: false },
+    { name: 'missing-id' },
+  ];
+
   const batch = {
     source: 'postgres',
     destination: 'warehouse',
     table: 'public.users',
     primary_key: 'id',
-    records: [
-      { id: 2, name: 'Bob', active: true },
-      { id: 1, name: 'Alice', active: true },
-      { id: 2, name: 'Robert', active: false },
-      { name: 'missing-id' },
-    ],
+    records,
   };
 
   it('prepares a deterministic deduplicated batch', () => {
@@ -49,8 +51,8 @@ describe('Sky Warehouse Sync', () => {
   it('rejects invalid tables, oversized batches, and malformed bodies', async () => {
     expect((await request(app).post('/api/v1/prepare').send({ ...batch, table: 'bad table name' })).status).toBe(400);
 
-    const records = Array.from({ length: 1001 }, (_, id) => ({ id }));
-    expect((await request(app).post('/api/v1/prepare').send({ ...batch, records })).status).toBe(400);
+    const oversizedRecords = Array.from({ length: 1001 }, (_, id) => ({ id }));
+    expect((await request(app).post('/api/v1/prepare').send({ ...batch, records: oversizedRecords })).status).toBe(400);
 
     expect((await request(app).post('/api/v1/prepare').set('Content-Type', 'application/json').send('{bad')).status).toBe(400);
   });
