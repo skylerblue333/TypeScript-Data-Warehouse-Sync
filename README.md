@@ -1,44 +1,53 @@
-<!-- PORTFOLIO PROJECT PROFILE: maintained by the repository owner -->
+# Sky Warehouse Sync
 
-## Project profile and code-audit snapshot
+A deterministic TypeScript batch-preparation service for bounded warehouse-ingestion workflows in the SKYCOIN4444 engineering portfolio.
 
-**What this is:** **TypeScript-Data-Warehouse-Sync** is a public repository described as: “Enterprise-grade data warehouse sync implementation in TypeScript. #SkyCoin4444 #AI #Blockchain #DevOps #Innovation” Its dominant language signals are **TypeScript (2 files), JavaScript (1 files)**.
+## Implemented
 
-**Why it has value:** Its value is best understood through the implementation evidence currently present in the repository: **18 tracked files** were observed in the shallow audit, with the source structure and existing documentation providing the project’s specific context. This README does not treat a prototype, experiment, or archive as a production system without supporting evidence.
+- `POST /api/v1/prepare` with strict bounded validation.
+- Up to 1,000 records per request.
+- Explicit source, destination, table, and primary-key contract.
+- Primitive JSON record values only.
+- Invalid primary-key rows are reported by source index.
+- Duplicate primary keys are collapsed deterministically with last-write-wins semantics.
+- Output rows and object keys are normalized for deterministic replay.
+- SHA-256 batch identity over normalized configuration and rows.
+- Health/readiness endpoints, bounded request bodies, tests, production dependency audit, non-root container packaging, and runtime smoke verification.
 
-**Implementation evidence:** 1 test-related file(s) detected; 1 dependency or package manifest(s) detected; 2 build/CI/infrastructure signal(s) detected; and 3 documentation or governance file(s) detected. Test filenames observed include `tests/index.test.ts`. Dependency or package files include `package.json`. Build, CI, or infrastructure signals include `Dockerfile`, `.github/workflows/ci.yml`.
+## Example
 
-**Current status:** The repository is tracked on the `main` branch. The existing source tree, configuration, tests, workflows, and documentation remain authoritative for supported behavior and maturity. A code audit is not a production-readiness certification, and the presence of a test or workflow file does not establish that all checks pass.
+```json
+{
+  "source": "postgres",
+  "destination": "warehouse",
+  "table": "public.users",
+  "primary_key": "id",
+  "records": [
+    {"id": 1, "name": "Alice"},
+    {"id": 2, "name": "Bob"}
+  ]
+}
+```
 
-**Relationship to the wider portfolio:** This repository is one focused component of the broader Skyler Blue Spillers portfolio across AI, software engineering, cloud and DevOps, cybersecurity, blockchain, finance, education, social systems, and creative work. It may provide a service boundary, implementation pattern, experiment, archive, or reusable idea for related repositories. Treat repositories as technical dependencies only where documented interfaces and verified project requirements support that relationship.
+The response contains the normalized rows and a stable `sha256:<digest>` batch identifier suitable for downstream idempotency or manifest tracking.
 
-**Quality and security note:** No obvious secret-like pattern was detected by the limited static scan; this is not a substitute for a security audit. No TODO/FIXME marker was detected in the scanned text files.
+## Product boundary
 
----
+Status: **engineering beta**.
 
-# Typescript Data Warehouse Sync
+This service prepares and validates deterministic batches. It does **not** currently connect to PostgreSQL, BigQuery, Snowflake, Redshift, object storage, or any other external warehouse. It does not claim CDC, schema migration, durable job state, scheduling, distributed exactly-once delivery, transactional writes, credential management, tenant isolation, HA, or production deployment.
 
-![GitHub stars](https://img.shields.io/github/stars/skylerblue333/TypeScript-Data-Warehouse-Sync?style=flat-square)
-![GitHub license](https://img.shields.io/github/license/skylerblue333/TypeScript-Data-Warehouse-Sync?style=flat-square)
+External source/destination adapters should be implemented and verified as explicit integrations rather than represented by simulated job status.
 
-## 🌟 Overview
-**TypeScript-Data-Warehouse-Sync** is a professional-grade project within the **SkyCoin4444** ecosystem. It focuses on delivering high-value solutions in the domain of **TypeScript, JavaScript**.
+## Run
 
-## 🚀 Key Features
-- **Scalable Architecture**: Designed for enterprise-level growth and performance.
-- **Modern Standards**: Implements best practices for clean code and maintainability.
-- **Robust Integration**: Built to work seamlessly within modern cloud-native environments.
+```bash
+npm install
+npm run build
+npm test -- --runInBand
+npm start
+```
 
-## 🛠️ Technology Stack
-- **Primary Domain**: TypeScript, JavaScript
-- **Ecosystem**: SkyCoin4444 Digital Platform
+## License
 
-## 📂 Structure
-The project is organized into a modular structure to ensure clarity and ease of development.
-
-## 👨‍💻 Author
-**Skyler Blue Spillers**
-*Professional Chess Player & Software Engineer*
-
----
-*Powered by SkyCoin4444*
+See `LICENSE`.
